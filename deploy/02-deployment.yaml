@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+   name: campo_gitlab_ci
+   namespace: 
+   labels:
+     app: campo_gitlab_ci
+spec:
+  replicas: 1
+  selector:
+     matchLabels:
+       app: campo_gitlab_ci
+  template: 
+    metadata:
+      labels:
+        app: campo_gitlab_ci
+    spec:
+      imagePullSecrets:
+        - name: docker-credential     
+#      volumes:
+#        - name: volumeimages
+#          persistentVolumeClaim:
+#            claimName: 
+
+#NODE_AFFINITY
+#NODEGROUP_VALUES
+
+      containers:
+      - name: campo_gitlab_ci
+        image: 
+        
+        resources:
+          limits:
+#            cpu: 500m
+            memory: 200Mi
+          requests:
+            cpu: 50m
+            memory: 100Mi          
+
+        ports:
+        - containerPort: 3000
+      #  - containerPort: 5432
+ #       volumeMounts:
+ #         - mountPath: "/usr/share/nginx/html/images"
+ #           name: volumeimages        
+ #           subPath: images            
+        env:
+

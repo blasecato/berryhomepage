@@ -1,0 +1,235 @@
+stages:
+  - Build
+  - Deploy
+
+###################
+#      BUILD      #
+###################
+
+Build:
+  only:
+    - /^release.*$/
+    - main
+    - quality
+    - staging
+#    - develop  
+
+#  image: docker:latest
+  image: docker:19.03.12-dind
+  stage: Build
+  services:
+    - docker:dind
+
+  before_script:
+# validate name branch main->master
+    - if [ "$CI_COMMIT_BRANCH" == "main" ]; then 
+        CI_COMMIT_BRANCH="master" ;
+      fi
+    - echo "CI_COMMIT_BRANCH:"" "$CI_COMMIT_BRANCH ;
+
+    - BRANCH=$(echo $CI_COMMIT_BRANCH | tr [:lower:] [:upper:] ) ;
+    - echo "Branch:"" "$BRANCH ;
+    - echo "BRANCH=$BRANCH" >> build.variables ;
+
+# Name ISO dockerhub    
+    - imagen_docker="$CI_REGISTRY_IMAGE":"$CI_COMMIT_BRANCH"-"$CI_COMMIT_SHORT_SHA" ;
+    - echo $imagen_docker ;
+    - echo "imagen_docker=$imagen_docker" >> build.variables ;               
+
+# URL API
+    - url_api="URL_""APIBACKEND""_""$(echo $CI_COMMIT_BRANCH | tr [:lower:] [:upper:] )" ;
+    - echo "url_api:"" "$url_api;  
+    - url_api=$(eval echo $(echo '$'$url_api)) ;
+    - echo $url_api; 
+    - echo "url_api=$url_api" >> build.variables ;           
+
+# URL SITIO
+    - url_sitio="URL_""$(echo $CI_PROJECT_NAME | tr [:lower:] [:upper:] )""_""$(echo $CI_COMMIT_BRANCH | tr [:lower:] [:upper:] )" ;
+    - echo "url_sitio:"" "$url_sitio;  
+    - export url_sitio=$(eval echo $(echo '$'$url_sitio)) ;
+    - echo $url_sitio; 
+    - echo "url_sitio=$url_sitio" >> build.variables ;           
+
+
+#Build ENV
+
+  # SELECT main (master), staging, develop
+    - echo 'API_URL=https://'"$url_api" >> build/.env ;
+    - echo 'REACT_APP_API_URL=https://'"$url_api" >> build/.env ;
+    - ENV="CI_ENV_""$(echo $CI_COMMIT_BRANCH | tr [:lower:] [:upper:] )" ;
+    - cat $(eval echo $(echo '$'$ENV)) >> build/.env;
+    - sed -i '/^$/d' build/.env ;    
+    - cat build/.env ;    
+    - cp build/.env build/.env.production ;
+    - cat build/.env.production ;
+
+
+#Build NGINX_DEFAULT
+    - cat "$CI_NGINX_DEFAULT"  >> build/default.conf;
+    - cat build/default.conf ;         
+
+# Auth dockerhub
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"              
+
+#Add env url api Dockerfile
+    - url_api_temp=$(echo "https://"$url_api | sed 's/\//\\\//g') ;    
+    - echo "echo:"$url_api_temp ;    
+    - sed -i '6 s/ENV/& API_URL='$url_api_temp'/g' Dockerfile ;  
+    - cat Dockerfile; 
+
+# Build dockerhub
+    - if [ "$CI_COMMIT_BRANCH" == "master" ]; then 
+        docker build --pull -t "$CI_REGISTRY_IMAGE" . ;
+        docker tag  "$CI_REGISTRY_IMAGE" "$imagen_docker" ;        
+        docker tag  "$CI_REGISTRY_IMAGE" "$CI_REGISTRY_IMAGE":latest ;        
+      else 
+        docker build --pull -t "$imagen_docker" . ;
+      fi
+
+
+  script:
+# Publish dockerhub    
+    - docker push "$CI_REGISTRY_IMAGE" ;    
+    - echo "END BUILD"; 
+
+  artifacts:
+    reports:
+      dotenv: build.variables
+    paths:
+      - build/.env
+
+###################
+#     DEPLOY      #
+###################
+
+Deploy:
+  only:
+    - /^release.*$/
+    - main
+    - quality
+    - staging
+#    - develop  
+
+  image: alpine:3.7
+  stage: Deploy
+  environment:
+    name: Deploy
+  variables:
+    file_yaml_secret: 01-secret.yaml
+    file_yaml_deployment: 02-deployment.yaml
+    file_yaml_service: 03-service.yaml      
+    file_yaml_ingress: 04-ingress.yaml  
+
+  before_script:
+# validate name branch main->master
+    - if [ "$CI_COMMIT_BRANCH" == "main" ]; then 
+        CI_COMMIT_BRANCH="master" ;
+      fi
+    - echo "CI_COMMIT_BRANCH:"" "$CI_COMMIT_BRANCH ;
+
+    - echo "Branch:"" "$BRANCH;    
+#    - echo "url_api:"" "$url_api;
+#    - echo "url_sitio:"" "$url_sitio;
+#    - cat build/.env    ;    
+
+# Install jq
+    - apk update && apk add jq ;
+
+# ISO DOCKER
+    - imagen_docker=$(echo "$imagen_docker" | sed 's/\//\\\//g') ; 
+    - echo $imagen_docker ;
+
+    - ENV="CI_ENV_""$(echo $CI_COMMIT_BRANCH | tr [:lower:] [:upper:] )" ;
+    - cat $(eval echo $(echo '$'$ENV)) >> build/.env;
+    - sed -i '/^$/d' build/.env ;       
+
+# ENV SECRET ${file_yaml_secret}
+    - echo "before_script - ENV SECRET" ;
+    - sed -i 's/^/  /g' build/.env ;
+    - sed -i 's/=/:\ "/1' build/.env ;
+    - sed -i 's/$/"/' build/.env ; 
+    - cat build/.env ;        
+
+    - cat build/.env >> deploy/${file_yaml_secret} ;
+#    - sed -i '4 s/name:\ /&'"$CI_COMMIT_BRANCH"'-/g' deploy/${file_yaml_secret} ;
+    - sed -i 's/campo_gitlab_ci/'"$CI_COMMIT_BRANCH"'-'"$CI_PROJECT_NAME"'/g' deploy/${file_yaml_secret} ;      
+    - sed -i '5 s/namespace:\ /&'"$CI_COMMIT_BRANCH"'/g' deploy/${file_yaml_secret} ;
+  
+
+# DEPLOYMENT ${file_yaml_deployment}
+    - echo "before_script - DEPLOYMENT" ;
+    - sed -i 's/campo_gitlab_ci/'"$CI_COMMIT_BRANCH"'-'"$CI_PROJECT_NAME"'/g' deploy/${file_yaml_deployment} ;      
+    - sed -i '5 s/namespace:\ /&'"$CI_COMMIT_BRANCH"'/g' deploy/${file_yaml_deployment}
+    - sed -i '23 s/claimName:\ /&'"efs-claim-$CI_COMMIT_BRANCH-images"'/g' deploy/${file_yaml_deployment}    
+    - sed -i '30 s/image:\ /&'"$imagen_docker"'/g' deploy/${file_yaml_deployment}
+
+    #Add nodegroups
+    - sed -i 's/^/                - /g' $CI_NODEGROUP ;
+
+    - sed -e '/#NODE_AFFINITY/ {' -e 'r '"$CI_NODE_AFFINITY" -e 'd' -e '}' -i deploy/${file_yaml_deployment}
+    - sed -e '/#NODEGROUP_VALUES/ {' -e 'r '"$CI_NODEGROUP" -e 'd' -e '}' -i deploy/${file_yaml_deployment}
+
+    - cut -d ':' -f 1 build/.env > deploy/tmp_yaml_deployment ;
+#    - cat deploy/tmp_yaml_deployment    ;    
+
+    - for nombre_variable in $(cat deploy/tmp_yaml_deployment); do 
+        echo "          - name:"" $nombre_variable" >> deploy/${file_yaml_deployment} ;        
+        echo "            valueFrom:" >> deploy/${file_yaml_deployment} ;
+        echo "              secretKeyRef:" >> deploy/${file_yaml_deployment} ;
+        echo "                name:"" $CI_COMMIT_BRANCH-$CI_PROJECT_NAME""-env" >> deploy/${file_yaml_deployment} ;
+        echo "                key:"" $nombre_variable" >> deploy/${file_yaml_deployment} ;        
+      done
+
+# SERVICE ${file_yaml_service}
+    - echo "before_script - SERVICE" ;
+    - sed -i 's/campo_gitlab_ci/'"$CI_COMMIT_BRANCH"'-'"$CI_PROJECT_NAME"'/g' deploy/${file_yaml_service} ;      
+    - sed -i '5 s/namespace:\ /&'"$CI_COMMIT_BRANCH"'/g' deploy/${file_yaml_service}
+
+# INGRESS ${file_yaml_ingress}
+    - echo "before_script - INGRESS" ;
+    - sed -i 's/campo_gitlab_ci/'"$CI_COMMIT_BRANCH"'-'"$CI_PROJECT_NAME"'/g' deploy/${file_yaml_ingress} ;      
+    - sed -i '5 s/namespace:\ /&'"$CI_COMMIT_BRANCH"'/g' deploy/${file_yaml_ingress}    
+    - sed -i '14 s/secretName:\ /&'"$CI_COMMIT_BRANCH"'-ssl-berrysafe-com-ingress-secret''/g' deploy/${file_yaml_ingress}                
+    - sed -i 's/URL/'"$url_sitio"'/g' deploy/${file_yaml_ingress} ;          
+
+  script:
+
+#Execute Kubectl
+    - apk update  && apk add --no-cache curl grep
+    - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+    - chmod +x ./kubectl && mv ./kubectl /usr/local/bin/kubectl
+    - mkdir -p ${HOME}/.kube
+    - cat ${KUBECONFIG} > $HOME/.kube/config
+
+# ENV SECRET
+    - echo "script - ENV SECRET"
+#    - echo $file_yaml_secret    
+    - cat deploy/${file_yaml_secret}    
+    - kubectl apply -f deploy/${file_yaml_secret}
+
+# DEPLOYMENT
+    - echo "script - DEPLOYMENT"
+#    - echo $file_yaml_deployment    
+    - cat deploy/${file_yaml_deployment}
+    - kubectl apply -f deploy/${file_yaml_deployment}    
+
+# SERVICE
+    - echo "script - SERVICE"
+#    - echo $file_yaml_service    
+#    - cat deploy/${file_yaml_service}    
+    - kubectl apply -f deploy/${file_yaml_service}        
+
+# INGRESS
+    - echo "script - INGRESS"
+#    - echo $file_yaml_service    
+    - cat deploy/${file_yaml_ingress}    
+    - kubectl apply -f deploy/${file_yaml_ingress}   
+
+    - echo "END DEPLOY"; 
+
+# Clear orphaned replicasets
+    - kubectl -n "$CI_COMMIT_BRANCH" get rs -o json|jq -r '.items[] | select(.spec.replicas | contains(0)) | " \(.metadata.name)"'
+    - sleep 40
+    - eval $(kubectl -n "$CI_COMMIT_BRANCH" get rs -o json|jq -r '.items[] | select(.spec.replicas | contains(0)) | "kubectl delete rs -n $CI_COMMIT_BRANCH \(.metadata.name)"')    
+##
+

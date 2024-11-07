@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: campo_gitlab_ci-ingress
+  namespace:   
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+#    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+#    cert-manager.io/cluster-issuer: "letsencrypt-staging"    
+spec:
+  tls:
+  - hosts:
+    - URL
+    secretName: 
+  rules:
+  - host: URL
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: campo_gitlab_ci-svc
+            port:
+              number: 3000

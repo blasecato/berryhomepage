@@ -1,0 +1,15 @@
+{
+    "version": "0.2",
+    "ignorePaths": [],
+    "dictionaryDefinitions": [],
+    "dictionaries": [],
+    "words": [
+        "antd",
+        "anticon",
+        "Berrysafe",
+        "donw",
+        "frozenberry"
+    ],
+    "ignoreWords": [],
+    "import": []
+}
