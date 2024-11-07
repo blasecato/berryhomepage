@@ -1,0 +1,61 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+
+@mixin h1 {
+  color: var(--colors-white);
+  font-family: $Lato;
+  font-size: 50px;
+  font-style: normal;
+  font-weight: 900;
+  line-height: 105%;
+  white-space: break-spaces;
+}
+
+@mixin h2 {
+  color: var(--colors-pureberry);
+  font-family: $Lato;
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 900;
+  line-height: 120%;
+}
+
+@mixin body-bold {
+  color: var(--colors-pureberry);
+  font-family: $Roboto;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 150.187%;
+}
+
+@mixin body-regular {
+  color: var(--colors-pureberry);
+  font-family: $Roboto;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%;
+}
+
+@mixin button-txt {
+  color: var(--colors-white);
+  text-align: center;
+  font-family: $Lato;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+
+@mixin sub-title {
+  white-space: break-spaces;
+  color: var(--colors-white);
+  font-family: $Lato;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  letter-spacing: -0.4px;
+}
+
