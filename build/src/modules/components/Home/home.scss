@@ -1,0 +1,366 @@
+.banner-content {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  background: url("../../../../public/bgcircuit.png"),
+    linear-gradient(90deg, #1c0e42 0%, #2f0a94 99%);
+
+  .content-good-heavens {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 30;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .content {
+      height: 500px;
+      width: 500px;
+      margin-top: 120px;
+      margin-left: -60px;
+      position: relative;
+      animation: opacityAnimate 1.5s linear;
+      transition: 0.45s;
+
+      .shadow {
+        position: absolute;
+        right: 235px;
+        height: 0px;
+        width: 0px;
+        top: 50%;
+        border-radius: 2%;
+        box-shadow: 0 0 17px 20px rgba(94, 255, 247, 0.6),
+          0 0 150px 163px rgba(94, 255, 247, 0.4),
+          0 0 132px 179px rgba(94, 255, 247, 0.096);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        @media only screen and (max-height: 800px) {
+          right: 265px;
+        }
+      }
+      .svg {
+        filter: drop-shadow(5px 9px 3px rgba(94, 255, 247, 0.6));
+        position: absolute;
+        width: 128px;
+        animation: waveMove 3s linear infinite;
+        height: 30px;
+        @media only screen and (max-height: 800px) {
+          animation: waveMove 5s linear infinite;
+          width: 128px;
+          height: 13px;
+        }
+      }
+
+      .svg-1 {
+        top: 116px;
+        right: 241px;
+        rotate: 236deg;
+      }
+
+      .svg-2 {
+        top: 162px;
+        right: 83px;
+        rotate: 121deg;
+      }
+
+      .svg-3 {
+        top: 235px;
+        right: 90px;
+        rotate: 228deg;
+      }
+
+      .svg-4 {
+        top: 377px;
+        right: 200px;
+        rotate: 90deg;
+      }
+
+      .svg-5 {
+        top: 282px;
+        right: 320px;
+        rotate: 167deg;
+      }
+      @media only screen and (max-height: 800px) {
+        .svg-1 {
+          top: 137px;
+          right: 231px;
+        }
+
+        .svg-2 {
+          top: 182px;
+          right: 100px;
+        }
+
+        .svg-3 {
+          top: 237px;
+          right: 108px;
+        }
+
+        .svg-4 {
+          top: 340px;
+        }
+
+        .svg-5 {
+          top: 277px;
+          right: 288px;
+        }
+      }
+
+      @keyframes waveMove {
+        0% {
+          transform: translateX(0);
+        }
+        100% {
+          transform: translateX(-30%);
+        }
+      }
+      @keyframes opacityAnimate {
+        0% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+    }
+    &-3 {
+      animation: opacityAnimate 0.6s linear;
+      .content {
+        margin-top: -22px;
+        margin-left: -764px;
+        @media only screen and (max-height: 800px) {
+          margin-top: 36px;
+          margin-left: -575px;
+        }
+        .shadow {
+          box-shadow: 0 0 17px 20px rgba(94, 255, 247, 0.6),
+            0 0 150px 163px rgba(94, 255, 247, 0.4),
+            0 0 132px 179px rgba(94, 255, 247, 0.096);
+        }
+
+        .svg-1 {
+          top: 78px;
+          right: 241px;
+          rotate: 271deg;
+        }
+
+        .svg-2 {
+          top: 179px;
+          right: 157px;
+          rotate: 148deg;
+        }
+
+        .svg-3 {
+          top: 242px;
+          right: 119px;
+          rotate: 200deg;
+        }
+
+        .svg-4 {
+          top: 347px;
+          right: 146px;
+          rotate: 52deg;
+        }
+
+        .svg-5 {
+          top: 387px;
+          right: 251px;
+          rotate: 85deg;
+        }
+        @media only screen and (max-height: 800px) {
+          .svg-1 {
+            top: 95px;
+          }
+          .svg-2 {
+            top: 166px;
+          }
+          .svg-3 {
+            top: 215px;
+            right: 141px;
+          }
+          .svg-4 {
+            top: 307px;
+            right: 157px;
+          }
+          .svg-5 {
+            top: 345px;
+            right: 245px;
+          }
+        }
+      }
+    }
+  }
+  .section {
+    flex: 0 0 100vw;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    position: relative;
+    margin: 0 auto;
+    .container {
+      position: relative;
+    }
+    .column {
+      width: 50%;
+      height: 100%;
+      &-text,
+      &-img {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 18px;
+      }
+      &-card {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+    &-3,
+    &-4,
+    &-1 {
+      .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        .sub-title {
+          max-width: 320px;
+          margin: 0 auto;
+        }
+      }
+      .column {
+        width: 50%;
+        &-img {
+          .img-banner {
+            margin-top: 60px;
+          }
+        }
+      }
+      .card {
+        position: relative;
+        border-radius: 22.54px;
+        border: 5px solid #d5d5d5;
+        background: var(--Backberry, #f6f6f6);
+        box-shadow: 63px 47px 90.8px 0px #13004a;
+        width: 439.851px;
+        height: 540.221px;
+        padding: 15px;
+        .body-regular {
+          margin: 10px 0;
+        }
+        .insurers {
+          height: 48px;
+          width: 131px;
+        }
+        .items {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 10px;
+          &-card {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 10px;
+            height: 92px;
+            width: 48%;
+            border-radius: 10px;
+            background: var(--Blanco, #fff);
+            box-shadow: 4px 4px 8px 0px rgba(0, 0, 0, 0.05);
+          }
+        }
+        .circle-ray {
+          height: 90px;
+          width: 90px;
+          border-radius: 50%;
+          position: absolute;
+          bottom: -55px;
+          left: 40%;
+          background-color: #1c0e42;
+          border: 3px solid #fff;
+          img {
+            filter: drop-shadow(5px 5px 10px $colors-frozenberry);
+            animation: pulse 2s infinite; /* Animación continua */
+            transform-origin: center;
+          }
+
+          @keyframes pulse {
+            0% {
+              transform: scale(1);
+            }
+            50% {
+              transform: scale(1.5); /* Escalado sutil */
+            }
+            100% {
+              transform: scale(1);
+            }
+          }
+        }
+      }
+    }
+    &-4 {
+      .column {
+        &-text {
+          display: flex;
+          justify-content: center;
+        }
+      }
+    }
+    &-2 {
+      display: flex;
+      align-items: self-start;
+      justify-content: center;
+      padding-top: 100px;
+      .sub-title {
+        font-size: 23px;
+        font-weight: 700;
+      }
+    }
+  }
+
+  .steps {
+    position: absolute;
+    width: 100%;
+    bottom: 20px;
+    z-index: 2000;
+    .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+    }
+    &-items {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      .step {
+        border: 1px solid #fff;
+        height: 4px;
+        width: 22px;
+        border-radius: 50px;
+        background: transparent;
+        &-1 {
+          width: 122px;
+        }
+      }
+      .active {
+        background-color: #fff;
+      }
+    }
+  }
+}
+body {
+  scroll-behavior: smooth;
+  overflow-x: hidden; /* Habilita el scroll horizontal */
+  white-space: nowrap; /* Evita que los elementos se dividan en varias líneas */
+}
+

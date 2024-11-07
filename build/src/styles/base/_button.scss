@@ -1,0 +1,47 @@
+.button {
+  &-default {
+    @include button-txt;
+    background: var(--colors-frozenberry);
+    border-radius: 5px;
+    padding: 16.5px 28px;
+    border: none;
+  }
+  &-link {
+    @include button-txt;
+    background: transparent;
+    border: none;
+  }
+}
+
+// Archivo Sass para personalizar el switch
+.switch {
+  position: relative;
+  width: 54px;
+  height: 16px;
+  background-color: transparent;
+  border-radius: 25px;
+  transition: background-color 0.3s ease;
+  border: solid #b2b2b2 1px;
+
+  &__toggle {
+    position: absolute;
+    top: -8px;
+    left: -1px;
+    width: 31px;
+    height: 31px;
+    background-color: #b2b2b2;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+  }
+
+  &--checked {
+    border: solid #b2b2b2 0px;
+    background-color: #35d8d0; // Puedes usar cualquier color fosforescente aquí
+
+    & .switch__toggle {
+      background-color: #340aab;
+      transform: translateX(25px); // Movimiento de la palanca
+    }
+  }
+}
+
