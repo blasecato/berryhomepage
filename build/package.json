@@ -23,7 +23,8 @@
     "react-dom": "^18",
     "react-horizontal-scrolling-menu": "^8.1.0",
     "sass": "^1.79.4",
-    "three": "^0.169.0"
+    "three": "^0.169.0",
+    "typewriter-effect": "^2.21.0"
   },
   "devDependencies": {
     "@types/node": "^20",

@@ -34,7 +34,7 @@ export default function ThreeObject({ currentSection }: Props) {
   useFrame(() => {
     if (meshRef.current) {
       // Movimiento muy mínimo en el eje Y
-      meshRef.current.position.y += Math.sin(Date.now() * 0.019) * 0.0001;
+      meshRef.current.position.y += Math.sin(Date.now() * 0.0019) * 0.0009;
     }
   });
 

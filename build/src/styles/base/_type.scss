@@ -1,3 +1,10 @@
+@font-face {
+  font-family: "JennaSue";
+  src: url("/fonts/JennaSue.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
 .h1 {
   @include h1;
 }
@@ -16,5 +23,15 @@
 
 .sub-title {
   @include sub-title;
+}
+
+.text-gradient {
+  font-style: normal;
+  line-height: 140%;
+  background: linear-gradient(90deg, #00dbd0 0.01%, #7b3bf9 99.98%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
 }
 

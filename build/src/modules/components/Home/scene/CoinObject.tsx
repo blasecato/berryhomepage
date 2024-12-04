@@ -30,10 +30,6 @@ export default function CoinObject({ currentSection, modelPath, positionCircle, 
     coinRef.current.rotation.x += (Math.random() - .5) * 0.05;
     coinRef.current.rotation.z += (Math.random() - .5) * 0.05;
 
-    // coinRef.current.position.y += (Math.random() - 0.5) * 0.002;
-    // coinRef.current.position.x += (Math.random() - 0.5) * 0.002;
-    // coinRef.current.position.z += (Math.random() - 0.5) * 0.002;
-
     if (coinRef.current.rotation.y > maxRotation) {
       coinRef.current.rotation.y = maxRotation;
     } else if (coinRef.current.rotation.y < minRotation) {
@@ -49,8 +45,6 @@ export default function CoinObject({ currentSection, modelPath, positionCircle, 
     } else if (coinRef.current.rotation.x < minRotation) {
       coinRef.current.rotation.x = minRotation;
     }
-
-    // coinRef.current.position.y += Math.sin(Date.now() * 0.009) * 0.001;
   });
 
 

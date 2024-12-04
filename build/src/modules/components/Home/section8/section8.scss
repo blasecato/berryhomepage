@@ -1,0 +1,43 @@
+.cardSlide {
+  width: 663px;
+  height: 550px;
+  background-color: #4a3a7cce;
+  padding: 10px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  position: absolute;
+  right: 0;
+  top: 200px;
+  transform: rotate3d(-33, 146, 0, 40deg);
+  backdrop-filter: blur(4px);
+
+  p {
+    color: $colors-white;
+    margin-bottom: 10px;
+  }
+  &:first-child {
+    right: 150px;
+    z-index: 2;
+    transform: rotate3d(-31, 166, 0, 32deg);
+  }
+  &:last-child {
+    right: 0px;
+    z-index: 1;
+    scale: 0.9;
+  }
+  @media only screen and (max-height: 800px) {
+    top: 120px !important;
+  }
+}
+.section-8 {
+  .container {
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+    min-height: 100vh;
+  }
+}
+
